@@ -1,0 +1,10 @@
+---
+- hosts: PROD
+  tasks:
+  - name: mount commitlog
+    become: yes
+    mount:
+      path: /opt/cassandra/commitlog
+      src: /dev/mapper/vg_root-lv_optcassandra
+      fstype: xfs
+      state: present

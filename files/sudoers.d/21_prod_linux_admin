@@ -1,0 +1,1 @@
+%prod_linux_admins ALL=(ALL) NOPASSWD: ALL

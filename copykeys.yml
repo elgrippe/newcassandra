@@ -1,0 +1,10 @@
+---
+- hosts: all
+  vars:
+    - pubkey: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEKijtf4F777orapvtQP3iUlpUQC0wUBkti1CSzy/0SPI6VGDkWT7vfzu5DlzHopfRJ+kP+ik1RE4+y2q/juzGEFSRLtOfSN0XQqSh/chrAS7j2p0MsKYqkK7Ng+ZGDwsVQqRNiKgiHBb+jT1++wZTt268yVT6SgcAubGGpUifemVFrcvUerK5sKbc2VmpWycOMQGHi90Le9Uk0ZNiEcb2Mbc+RDeLy8MJCEWq20kbLb7AaHaZtUTksXo4EqxFol8lknjddv+wEe8GCHCQqSppRtIWneX7x6W7wuvrMAH7Zj0xrHtxQfkRi9sPcUpskwzNGqst4tW6TPnLhEN/Mdsz svc_ansible@at4m-lvrdeck02.liaison.prod
+  tasks:
+  - name: put pubkey
+    become: yes
+    lineinfile:
+      path: "/home/svc_ansible/.ssh/authorized_keys"
+      line: "{{ pubkey }}"

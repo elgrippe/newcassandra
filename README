@@ -1,0 +1,15 @@
+edit vars/main.yml with your username and password for AD
+current files/sssd.conf file contains px1 information - edit for at4 or se3
+run as root as svc_ansible is an AD user
+ansible-playbook -i inventory main.yml -u root -k 
+I then did this (getting svc_ansible in your copy buffer is recommended unless you like to type a lot):
+for i in `cat inventory`; do ssh-copy-id ${i}; done
+and then to confirm it worked with:
+for i in `cat inventory`; do ssh -f ${i} "hostname"; done
+
+todo:
+refactor and move files into templates, adjust copy module accordingly to template module and src path
+
+ansiblize the svc_ansible account ssh-copy-id
+
+protect/obfuscate the user/pass variables for domain joining

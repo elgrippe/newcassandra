@@ -1,0 +1,3 @@
+- hosts: PROD
+  tasks:
+    - include: tasks/data-dir.yml

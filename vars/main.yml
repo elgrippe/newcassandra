@@ -1,0 +1,9 @@
+---
+# user plain text then remove when you're done
+# eventually this will be protected
+# example:
+# username: frodo
+# passphrase: 9f1ng3rs
+# do not fat finger as you will probably lock your account
+  username: mchurch
+  passphrase: Blackfrancis111

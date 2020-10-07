@@ -1,0 +1,11 @@
+---
+  - hosts: all
+    tasks:
+      - name: swapiness
+        become: yes
+        command: sysctl -w vm.swappiness=1
+
+      - name: persist it
+        become: yes
+        shell: "echo 'vm.swappiness = 1' >> /etc/sysctl.conf"
+

@@ -1,0 +1,47 @@
+---
+
+- hosts: all
+  tasks:
+    - name: complete yum transactions
+      become: yes
+      command: /usr/sbin/yum-complete-transaction
+
+    - name: clean yum db
+      become: yes
+      command: /usr/bin/yum clean all
+
+    - name: remove old cache files
+      become: yes
+      command: /bin/rm -rf /var/cache/yum
+
+#    - name: ensure cache updated
+#      become: yes
+#      yum:
+#        update_cache: yes
+#        name: '*'
+#        state: latest
+#
+    
+    - name: upgrade all packages
+      become: yes
+      yum:
+        name: '*'
+        state: latest
+
+#    - name: backup localtime
+#      become: yes 
+#      command: cp /etc/localtime /root/old.timezone
+
+#    - name: remove localtime
+#      become: yes
+#      command: rm /etc/localtime
+
+#    - name: set timezone to America/New_York
+#      become: yes 
+#      command: ln -s /usr/share/zoneinfo/America/New_York /etc/localtime
+
+#    - name: Reboot systems after patches applied 
+#      become: yes
+#      shell: init 6 
+
+

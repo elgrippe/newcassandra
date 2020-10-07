@@ -1,0 +1,62 @@
+---
+- name: Disable swap for current session
+  command: swapoff -a
+  become: true
+
+- name: Disable swap permanently, persist reboots
+  replace:
+    path: /etc/fstab
+    regexp: '^(\s*)([^#\n]+\s+)(\w+\s+)swap(\s+.*)$'
+    replace: '#\1\2\3swap\4'
+
+- name: create mount point data
+  become: yes
+  shell: mkdir -p /opt/cassandra/data
+
+- name: create mount point commitlog
+  become: yes
+  shell: mkdir -p /opt/cassandra/commitlog
+
+- name: make disk label
+  become: yes
+  shell: parted -s /dev/sdb mklabel gpt
+
+- name: make disk partition
+  become: yes
+  shell: parted -s /dev/sdb unit mib mkpart primary 1 100%
+
+- name: make xfs filesystem
+  become: yes
+  shell: mkfs -t xfs -L DATA /dev/sdb1
+
+- name: mount data
+  become: yes
+  mount:
+    path: /opt/cassandra/data
+    src: LABEL=DATA
+    fstype: xfs
+    state: present
+  
+- name: resize partition sda2
+  become: yes
+  shell: parted -s /dev/sda resizepart 2 118G 
+
+- name: pvresize sda2
+  become: yes
+  shell: pvresize /dev/sda2
+
+- name: lvcreate commitlog
+  become: yes
+  shell: lvcreate -L 60G -n lv_optcassandra vg_root
+
+- name: make xfs filesystem
+  become: yes
+  shell: mkfs -t xfs /dev/mapper/vg_root-lv_optcassandra
+
+- name: mount commitlog
+  become: yes
+  mount:
+    path: /opt/cassandra/commitlog
+    src: /dev/mapper/vg_root-lv_optcassandra
+    fstype: xfs
+    state: present

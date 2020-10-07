@@ -1,0 +1,91 @@
+---
+
+- name: copy resolv.conf
+  copy: 
+    src: /home/svc_ansible/projects/mc/newcassandra/files/resolv.conf
+    dest: /etc
+    force: yes
+
+- name: copy krb5.conf
+  copy:
+    src: /home/svc_ansible/projects/mc/newcassandra/files/krb5.conf
+    dest: /etc
+    force: yes
+
+- name: copy ntp.conf
+  copy:
+    src: /home/svc_ansible/projects/mc/newcassandra/files/ntp.conf
+    dest: /etc
+    force: yes
+
+- name: copy zabbix_agentd.conf
+  copy:
+    src: /home/svc_ansible/projects/mc/newcassandra/files/zabbix_agentd.conf
+    dest: /etc/zabbix
+    force: yes
+
+- name: copy up2date
+  copy:
+    src: /home/svc_ansible/projects/mc/newcassandra/files/up2date
+    dest: /etc/sysconfig/rhn/
+    force: yes
+
+- name: copy smb.conf
+  copy: 
+    src: /home/svc_ansible/projects/mc/newcassandra/files/smb.conf
+    dest: /etc/samba
+
+- name: copy access.conf
+  copy:
+    src: /home/svc_ansible/projects/mc/newcassandra/files/access.conf
+    dest: /etc/security
+
+- name: copy sssd.conf
+  copy: 
+    src: /home/svc_ansible/projects/mc/newcassandra/files/sssd.conf
+    dest: /etc/sssd
+    mode: 0600
+
+- name: copy sudoers.d
+  copy: 
+    src: /home/svc_ansible/projects/mc/newcassandra/files/sudoers.d/
+    dest: /etc/sudoers.d
+    mode: 0440
+
+- name: copy rpm-gpg
+  copy: 
+    src: /home/svc_ansible/projects/mc/newcassandra/files/rpm-gpg/
+    dest: /etc/pki/rpm-gpg
+    mode: 0440
+
+#- name: register with satellite
+#  shell: rhnreg_ks --activationkey 1-master_key_rhel7_default --force
+
+- name: yum install stuff
+  shell: yum -y install sssd realmd oddjob oddjob-mkhomedir adcli samba-common samba-common-tools sssd-libwbclient.x86_64 nfs-utils zabbix-agent
+
+#- name: update time
+#  shell: ntpdate -u 10.159.137.10
+
+- name: add kinit user
+  shell: echo {{ passphrase }} | kinit "{{ username }}"
+
+- name: join domain
+  shell: net ads join -k
+#  notify:
+#    - restart sssd
+#    - restart oddjobd
+
+- name: create keytab
+  shell: net ads keytab create
+
+#- name: update
+#  yum: 
+#    name: "*"
+#    state: latest
+
+#- name: restart to boot into newest kernel
+#  shell: shutdown -r now
+#  asysnc: 0
+#  poll: 0
+#  ignore_errors: true
